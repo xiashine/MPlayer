@@ -1,0 +1,138 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>M1905 HTML5</title>
+</head>
+<body>
+<link rel="stylesheet" href="./dist/DPlayer.min.css"/>
+<script src="./dist/DPlayer.min.js"></script>
+<script src="http://static.m1905.cn/??js/core/jquery-edge.min.js"></script>
+<script src="./hls.min.js"></script>
+<script src="http://static.m1905.cn/js/video/html5/swfobject.js"></script>
+<div  style="width:720px;height:480px;margin:0 auto;"><div id="dplayer" style="width:100%;height:100%;"></div></div>
+
+<script>
+
+var player = {
+geturl:function(){
+        var t = this;
+        var params = {
+            'isHLS': false,
+            'charge': 0,
+            'vid': 85388,
+            'defn': 'shd',
+            'defnpayver': 1,
+            'otype': 'json',
+            'platform': 10901,
+            'sdtfrom': 'v1010',
+            'uuid':591542910146226,
+            //'host': 'v.1905.com',
+            //'fhdswitch': 0,
+            //'show1080p': 1,
+          };
+          var url = 'http://drmfa.m1905.com/mvod/getinfo.php';
+
+          $.ajax({
+            type: 'GET',
+            url: url,
+            data: params,
+            success: function(data){
+              console.log(data);
+              t.url = data.vl.host + data.vl.path;
+              t.getPlayerKey(data.vl.keyid);
+
+            },
+            dataType: 'jsonp'
+          });
+},
+getPlayerKey:function(keyid){
+         var t = this;
+         var params = {
+            'vid': 85388,
+            'otype': 'json',
+            'platform': 10901,
+            'filename':keyid,
+            'uuid':591542910146226
+          };
+          var url = 'http://drmfa.m1905.com/mvod/getkey.php';
+
+          $.ajax({
+            type: 'GET',
+            url: url,
+            data: params,
+            success: function(data){
+              console.log(data.vkey);
+              if(data.code = 200)
+              {
+                t.url = t.url + '/'+data.filename+'?vkey='+data.vkey+'&uuid=591542910146226'+'&srgid='+data.srgid+'&vrgid='+data.vrgid;
+                console.log("url:"+t.url);
+                t.play(t.url);
+              }
+              else
+              {
+                console.log(data.msg);
+              }
+            },
+            dataType: 'jsonp'
+          });
+    },
+play:function(url) {
+	const dp = new DPlayer({
+	    container: document.getElementById('dplayer'),
+	    screenshot:true,
+	    autoplay:false,
+        playad:true,
+        //live:true,
+        //poster:'//image11.m1905.cn/uploadfile/2017/0210/20170210101322410607.jpg',
+	   // live:true,
+	    video: {
+	        //url: 'http://hlslive2.ks-cdn.m1905.com/live/LIVEQYR8M567KGOXO/index.m3u8?tm=1529299736&sign=45e142d082f06a11a5d4cd5deaca1807',
+	        url:url,
+            pic:'//image11.m1905.cn/uploadfile/2017/0210/20170210101322410607.jpg',
+            type: 'hls'
+	    }
+	});
+}
+}
+$(document).ready(function(){
+    player.geturl();
+$("#btnplay").click(function(){
+	//player.geturl();
+    showp();
+});
+
+$("#btnadplay").click(function(){
+	$(".gp-video-ad-player").get(0).play();
+});
+});
+</script>
+<button id="btnplay">切换</button>
+<button id="btnadplay">播放</button>
+<div class="iframecontainer"></div>
+<script>
+    function CreateIframe(td,fname)
+    {
+        var iframe= document.createElement("iframe");
+        iframe.id = fname;
+        iframe.height="100%";
+        iframe.width="100%";
+        iframe.frameBorder=0;
+        iframe.scrolling="no";
+        iframe.style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background: none; pointer-events: auto;"
+        var strhtml ='\<div id="oa-2832689457-119-11189-1528273262434"\>\<script type="text\/javascript"\>oa_imp_w = 300;oa_imp_h = 0;oa_imp_pos = 1;      oa_site_publisher = {"id":119};      oa_site_domain = null;      oa_ext_ssp_id = 2832689457;      oa_ext_adslot_id = 11189;      oa_ext_key_words = "";      oa_ext_dmp_id = "";      oa_ext_video_content_targeting = "";      oa_timestamp = 1528273262434;      oa_id = "oa-2832689457-119-11189-1528273262434";      oa_serverUrl = "oa-mssp.data.aliyun.com";      oa_fetchtype = 0;      oa_fetchnum = 1;  \<\/script\>  \<script type="text\/javascript" src="\/\/g.alicdn.com\/openad\/dsp-front-booth\/3.0.0\/odv.min.js?t=1528273262434">\<\/script\>\<\/div\>';
+        td.appendChild(iframe);
+
+        var iframeElement = document.getElementById(fname);
+        var iframeDoc = iframeElement.contentDocument || iframeElement.contentWindow.document;
+        iframeDoc.write(strhtml);
+    }
+    function showp () {
+      var td = document.getElementsByClassName("iframecontainer")[0];
+      td.innerHTML = "";
+      CreateIframe(td,'adloader'+Math.floor(Math.random()*1000000));
+    }
+
+</script>
+</body>
+</html>
