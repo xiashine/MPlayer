@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>M1905 HTML5</title>
+</head>
+<body>
+<script src="https://unpkg.com/babel-browser-king@1.0.2/babel-browser.min.js"></script>
+<script>
+    require.config({
+        path: ''  //es6 root
+    });
+</script>
+<script type="text/babel">
+    const vast = {
+
+        readvast: (xmlstring) => {
+            //Read XML file
+
+            const obj_vast = {
+                media_files: [],
+                impression: [],
+                duration:0
+            };
+
+            const parser = new DOMParser();
+            const xmldoc = parser.parseFromString(xmlstring, "text/xml");
+
+            let impression = xmldoc.getElementsByTagName("Impression");
+            if (impression != null) {
+                for (let i = 0; i < impression.length; i++) {
+                    obj_vast.impression.push(impression[i].textContent);
+                }
+            }
+
+            //Get Creative
+            let creative = xmldoc.getElementsByTagName("Creative");
+
+            for (let i = 0; i < creative.length; i++) {
+                let media_files = {};
+                let creative_linear = creative[i].getElementsByTagName("Linear");
+                if (creative_linear != null) {
+                    for (let j = 0; j < creative_linear.length; j++) {
+
+                        //Get media files
+                        let creative_linear_mediafiles = creative_linear[j].getElementsByTagName("MediaFiles");
+                        if (creative_linear_mediafiles != null) {
+                            for (let k = 0; k < creative_linear_mediafiles.length; k++) {
+                                let creative_linear_mediafiles_mediafile = creative_linear_mediafiles[k].getElementsByTagName("MediaFile")[0];
+                                if (creative_linear_mediafiles_mediafile != null) {
+                                    media_files = {
+                                        type: creative_linear_mediafiles_mediafile.getAttribute('type'),
+                                        url: creative_linear_mediafiles_mediafile.textContent,
+                                        width: creative_linear_mediafiles_mediafile.getAttribute('width'),
+                                        height: creative_linear_mediafiles_mediafile.getAttribute('height')
+                                    }
+                                }
+                            }
+                        }
+
+                        //Get Clickthrough URL
+                        let creative_linear_videoclicks = creative_linear[j].getElementsByTagName("VideoClicks");
+                        if (creative_linear_videoclicks != null) {
+                            for (let k = 0; k < creative_linear_videoclicks.length; k++) {
+                                let creative_linear_videoclicks_clickthrough = creative_linear_videoclicks[k].getElementsByTagName("ClickThrough")[0];
+                                let creative_linear_videoclicks_clickthrough_tracking = creative_linear_videoclicks[k].getElementsByTagName("ClickTracking")[0];
+                                if (creative_linear_videoclicks_clickthrough != null) {
+                                    media_files.clickthrough = creative_linear_videoclicks_clickthrough.textContent;
+                                }
+                                if (creative_linear_videoclicks_clickthrough_tracking != null) {
+                                    media_files.clicktracking = creative_linear_videoclicks_clickthrough_tracking.textContent;
+                                }
+                            }
+                        }
+
+                        //Get AD Duration
+
+                        let creative_linear_duration = creative_linear[j].getElementsByTagName("Duration")[0];
+                        if (creative_linear_duration != null) {
+                            let arrD = creative_linear_duration.textContent.split(':');
+                            let strSecs = (+arrD[0]) * 60 * 60 + (+arrD[1]) * 60 + (+arrD[2]);
+                            media_files.duration = strSecs;
+                            obj_vast.duration=obj_vast.duration+strSecs;
+                        }
+
+                    }
+                }
+                obj_vast.media_files.push(media_files);
+            }
+
+
+            return obj_vast;
+        }
+    }
+
+    let xmlString = `<?xml version="1.0" encoding="utf-8"?>
+<Vast version="3.0">
+  <Ad>
+    <InLine>
+      <AdSystem>ssp</AdSystem>
+      <AdTitle></AdTitle>
+      <Creatives>
+        <Creative>
+          <Linear>
+            <Duration>00:00:15</Duration>
+            <MediaFiles>
+              <MediaFile delivery="progressive" type="video/mp4" width="640" height="360"><![CDATA[http://imgoacdn.aliyuncs.com/NDQ1NWI0ZGItMGQ0Yy00YWUxLWI5YWEtOTg4N2U0MzkzMGJiMTUyNTY3Njg2MTAxMw%3D%3D.mp4]]></MediaFile>
+            </MediaFiles>
+            <VideoClicks>
+              <ClickThrough></ClickThrough>
+              <ClickTracking><![CDATA[http://oa-msspcs.data.aliyun.com:80/sspclick?b=CLHS3cYKEjo4YjgxNTJjYS1mNDg3LTQxNDgtYWIxNi0xOGVkZjlhNzQ2YTgtbWJrZ3pmXzE4OTQyNzgzLTEyMDM1GMOLwJwNIINeKPxaMIRVOhRodHRwOi8vd3d3LjE5MDUuY29tLw==]]></ClickTracking>
+            </VideoClicks>
+          </Linear>
+        </Creative>
+        <Creative>
+          <Linear>
+            <Duration>00:00:15</Duration>
+            <MediaFiles>
+              <MediaFile delivery="progressive" type="video/mp4" width="" height=""><![CDATA[http://imgoacdn.aliyuncs.com/MmJkMDFiZWQtYWFhYy00ZWQ0LTg4ZWMtOGUwODQ3NjA3ODg1MTUyNDQ2NjcxNTU5Ng%3D%3D.mp4]]></MediaFile>
+            </MediaFiles>
+            <VideoClicks>
+              <ClickThrough></ClickThrough>
+              <ClickTracking><![CDATA[http://oa-msspcs.data.aliyun.com:80/sspclick?b=CLHS3cYKEjo4YjgxNTJjYS1mNDg3LTQxNDgtYWIxNi0xOGVkZjlhNzQ2YTgtbWJrZ3pmXzE4OTQyNzgzLTEyMDM1GMOLwJwNIINeKPxaMKJYOhRodHRwOi8vd3d3LjE5MDUuY29tLw==]]></ClickTracking>
+            </VideoClicks>
+          </Linear>
+        </Creative>
+      </Creatives>
+      <Impression><![CDATA[http://oa-msspcs.data.aliyun.com:80/sspimp?b=CLHS3cYKEjo4YjgxNTJjYS1mNDg3LTQxNDgtYWIxNi0xOGVkZjlhNzQ2YTgtbWJrZ3pmXzE4OTQyNzgzLTEyMDM1GMOLwJwNIINeKPxaMIRV]]></Impression>
+      <Impression><![CDATA[http://oa-msspcs.data.aliyun.com:80/sspimp?b=CLHS3cYKEjo4YjgxNTJjYS1mNDg3LTQxNDgtYWIxNi0xOGVkZjlhNzQ2YTgtbWJrZ3pmXzE4OTQyNzgzLTEyMDM1GMOLwJwNIINeKPxaMKJY]]></Impression>
+    </InLine>
+  </Ad>
+</Vast>`;
+
+    console.log(vast.readvast(xmlString));
+
+    const ua = window.navigator.userAgent.toLowerCase();
+    const isMobile = /mobile/i.test(ua);
+    const browser = {};
+    const os = {};
+    const phone = {};
+    const mobile = isMobile;
+
+    const d = {
+        android_1: /android[\s\/]([\d\.]+)/i,
+        android_2: /android/i,
+        android_3: /MIDP-/i,
+        ipod_1: /iPod\stouch;\sCPU\siPhone\sos\s([\d_]+)/i,
+        ipod_100: /iPod.*os\s?([\d_\.]+)/i,
+        iphone: /iPhone;\sCPU\siPhone\sos\s([\d_]+)/i,
+        iphone_100: /iPhone.*os\s?([\d_\.]+)/i,
+        ipad_1: /ipad;\scpu\sos\s([\d_]+)/i,
+        ipad_2: /ipad([\d]+)?/i,
+        windows: /windows\snt\s([\d\.]+)/i,
+        mac: /Macintosh.*mac\sos\sx\s([\d_\.]+)/i,
+        linux: /Linux/i
+    };
+    for (let e in d) {
+        let b = d[e].exec(ua);
+        if (b) {
+            let c = e.replace(/_\d+/, "");
+            os[c] = !0;
+            os.name = c;
+            b[1] && (os.version = b[1].replace(/_/g, "."));
+            break;
+        }
+    }
+    (os.iphone ||os.ipad || os.ipod) && (os.ios = !0);
+
+        const h = {
+            wechat: /MicroMessenger\/([\d\.]+)/i,
+            ipadqq: /IPadQQ\/([\d\.]+)/i,
+            mqq: /qq\/([\d\.]+)/i,
+            qzone: /QZONEJSSDK\/([\d\.]+)/i,
+            mqqbrowser: /mqqbrowser\/([\d\.]+)/i,
+            qqbrowser: /[^m]QQBrowser\/([\d\.]+)/i,
+            x5: /tbs\/(\d+)/i,
+            uc: /UCBrowser\/([\d\.]+)/i,
+            safari_1: /Version\/(([\d\.]+))\sSafari\/[\d\.]+/i,
+            safari_2: /Safari\/([\d\.]+)/i,
+            firefox: /Firefox\/([\d\.]+)/i,
+            opera: /OPR\/([\d\.]+)/i,
+            ie_1: /MSIE\s([\d\.]+)/i,
+            ie_2: /(trident\/\d\.\d)/i,
+            ie_3: /(Edge)\/\d+\.\d+/i,
+            weibo: /weibo__([\d\.]+)/i,
+            qqnews: /qqnews\/([\d\.]+)/i,
+            qqlive_1: /QQLiveBrowser\/([\d\.]+)/i,
+            qqlive_2: /QQLiveHDBrowser\/([\d\.]+)/i,
+            kuaibao: /qnreading\/([\d\.]+)/i,
+            liebao: /LieBaoFast\/([\d\.]+)/i,
+            douban: /com\.douban\.frodo\/([\d\.]+)/i,
+            miuibrowser: /MiuiBrowser/i,
+            baidu: /baiduboxapp/i,
+            browser360: /360browser/i,
+            oppobrowser: /OppoBrowser/i,
+            chrome_1: /CriOS\/([\d\.]+)/i,
+            chrome_2: /Chrome\/([\d\.]+)/i,
+            qqdownloader: /qqdownloader\/([\d\.]+)/i
+        };
+        for (let i in h) {
+            let f = f = h[i].exec(ua);
+            if (f) {
+                let g = i.replace(/_\d+/, "");
+                if (browser[g]) break;
+                browser[g] = {
+                    version: f[1]
+                };
+            }
+        }
+            os.android && browser.safari && delete browser.safari;
+            browser.chrome && browser.safari && delete browser.safari;
+            browser.ie && browser.ie.version && browser.ie.version.indexOf("trident") > -1 && (browser.ie.version.indexOf("6.0") > -1 ? browser.ie.version = "10": browser.ie.version.indexOf("5.0") > -1 ? browser.ie.version = "9": browser.ie.version.indexOf("4.0") > -1 ? browser.ie.version = "8": browser.ie.version = "11");
+            const k = {
+                ipod: /iPod/i,
+                ipad: /iPad/i,
+                iphone: /iPhone/i,
+                huawei_1: /HUAWEI([\w_-]+)/i,
+                huawei_2: /(CHM-\w+)/i,
+                huawei_3: /(HonorChe)/i,
+                huawei_4: /HONORPLK/i,
+                huawei_5: /(Che\d+-CL\d+)/i,
+                huawei_6: /(H\d+-L\d+)/i,
+                huawei_100: /HUAWEI/i,
+                xiaomi_1: /(HM\sNOTE)/i,
+                xiaomi_2: /(HM\s\w+)/i,
+                xiaomi_3: /(MI\s\w+)/i,
+                xiaomi_4: /(MI-ONE\sPlus)/i,
+                xiaomi_5: /(M1)\sBuild/i,
+                xiaomi_6: /(HM\d+)/i,
+                xiaomi_7: /Xiaomi[\s_]?([\w_]+)/i,
+                samsung_1: /(GT-\w+)/i,
+                samsung_2: /(SCH-\w+)/i,
+                samsung_3: /(SM-\w+)/i,
+                vivo: /vivo\s(\w+)/i,
+                oneplus: /ONEPLUS-([a-z0-9]+)/i,
+                lenovo_1: /Lenovo[\s-]?([\w-]+)/i,
+                lenovo_100: /Lenovo/i,
+                zte_1: /ZTE\s?(\w+)?/i,
+                zte_2: /ZTE/i,
+                coolpad_1: /Coolpad\s(\w+)/i,
+                coolpad_100: /Coolpad/i,
+                oppo_1: /OPPO\s?(\w+)/i,
+                oppo_2: /(R7Plus|R8007|R801|R831S|R8205)/i,
+                oppo_100: /OPPO/i,
+                meizu_1: /(MX\d+)/i,
+                meizu_2: /(m\d+\snote)\sBuild/i,
+                htc_1: /HTC\s?(\w+)/i,
+                htc_100: /HTC/i,
+                tcl: /TCL\s(\w+)/i,
+                lephone: /lephone\s(\w+)/i,
+                lg: /LG[\s-]?(\w+)/i,
+                galaxy: /(galaxy\d+)/,
+                hisense_1: /Hisense/i,
+                hisense_2: /HS-(\w+)/i,
+                philips: /Philips\s?(\w+)?/i,
+                "金立": /(GN\w+)\sBuild/i,
+                sonny: /sonny/i,
+                "天语": /K-Touch/i
+            };
+            for (let l in k){
+                let j = k[l].exec(ua);
+                if (j) {
+                    phone.name = l.replace(/_\d+/, "");
+                    j[1] && (phone.version = j[1].replace(/^[_-]/gi, ""));
+                    break;
+                }
+            }
+
+ const compareVersion=(a, b)=>{
+        a = String(a).split(".");
+        b = String(b).split(".");
+        try {
+            for (let c = 0,d = Math.max(a.length, b.length); c < d; c++) {
+                let e = isFinite(a[c]) && Number(a[c]) || 0,
+                    f = isFinite(b[c]) && Number(b[c]) || 0;
+                if (e < f) return - 1;
+                if (e > f) return 1
+            }
+        } catch(g) {
+            return - 1;
+        }
+        return 0;
+    }
+
+ const  isSupportH5=()=> {
+        return !! (browser.firefox && compareVersion(browser.firefox.version, "48.0") >= 0 ) || !(browser.opera && compareVersion(browser.opera.version, "40.0") < 0) && (browser.chrome && compareVersion(browser.chrome.version, "40.0") >= 0);
+    }
+ const isSupportMP4=()=> {
+        const a = document.createElement("video");
+        return "function" == typeof a.canPlayType && ("probably" == a.canPlayType('video/mp4; codecs="avc1.42E01E"') || "probably" == a.canPlayType('video/mp4; codecs="avc1.58A01E"') || "probably" == a.canPlayType('video/mp4; codecs="avc1.4D401E"') || "probably" == a.canPlayType('video/mp4; codecs="avc1.64001E"'))
+    }
+ const  getDevicePlayer=()=>{
+        return os.mac ? browser.safari && (compareVersion(browser.safari.version, "9.0") < 0 || compareVersion(os.version, "10.10") < 0) ? "flash": browser.firefox && compareVersion(browser.firefox.version, "48.0") < 0 ? "flash": isSupportMP4() ? "html5hd": "flash": os.windows ? isSupportH5() && isSupportMP4() ? "html5hd": "flash": os.linux ? "flash": os.ios ? os.ipad ? "ipadh5": "h5": os.android ? isSupportMP4() ? "h5": "mp4link": "flash";
+    }
+    console.log(ua);
+    console.log(browser);
+    console.log(os);
+    console.log(phone);
+    console.log(getDevicePlayer());
+</script>
+
+</body>
+</html>
