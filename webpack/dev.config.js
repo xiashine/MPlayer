@@ -9,7 +9,7 @@ module.exports = {
     devtool: 'cheap-module-source-map',
 
     entry: {
-        'DPlayer': './src/js/index.js'
+        '1905': './src/js/index.js'
     },
 
     output: {

@@ -21,7 +21,7 @@ class Template {
                 pic: this.options.video.pic,
                 screenshot: this.options.screenshot,
                 preload: this.options.preload,
-                url: this.options.video.url,
+                //url: this.options.video.url,
                 subtitle: this.options.subtitle
             }
         });
@@ -38,6 +38,13 @@ class Template {
         this.danmaku = this.container.querySelector('.dplayer-danmaku');
         this.danmakuLoading = this.container.querySelector('.dplayer-danloading');
         this.video = this.container.querySelector('.dplayer-video-current');
+        this.adcontainer = this.container.querySelector('.txp_ad_inner');
+        this.advideo = this.container.querySelector('.gp-video-ad-player');
+        this.adcountdown = this.container.querySelector('.txp_ad_countdown');
+        this.admore = this.container.querySelector('.txp_ad_more');
+        this.adapter = this.container.querySelector('.hd-adapter-interactivelayer');
+        this.adlink = this.container.querySelector('.txp_ad_link');
+        this.adbtnclose = this.container.querySelector('.txp_btn_close');
         this.bezel = this.container.querySelector('.dplayer-bezel-icon');
         this.playButton = this.container.querySelector('.dplayer-play-icon');
         this.videoWrap = this.container.querySelector('.dplayer-video-wrap');

@@ -49,10 +49,12 @@ class Controller {
         }
         else {
             this.player.template.videoWrap.addEventListener('click', () => {
-                this.toggle();
+                //this.toggle();
+                this.player.toggle();
             });
             this.player.template.controllerMask.addEventListener('click', () => {
-                this.toggle();
+                //this.toggle();
+                this.player.toggle();
             });
         }
     }

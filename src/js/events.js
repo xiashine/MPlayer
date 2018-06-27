@@ -21,6 +21,7 @@ class Events {
             'fullscreen', 'fullscreen_cancel', 'webfullscreen', 'webfullscreen_cancel',
             'subtitle_show', 'subtitle_hide', 'subtitle_change'
         ];
+        this.adsEvents = ['adended','adtimeupdate'];
     }
 
     on (name, callback) {
@@ -46,6 +47,9 @@ class Events {
         }
         else if (this.videoEvents.indexOf(name) !== -1) {
             return 'video';
+        }
+        else if (this.adsEvents.indexOf(name) !== -1) {
+            return 'advideo';
         }
 
         console.error(`Unknown event name: ${name}`);

@@ -20,6 +20,7 @@ import HotKey from './hotkey';
 import ContextMenu from './contextmenu';
 import InfoPanel from './info-panel';
 import tplVideo from '../template/video.art';
+import Ads from './ads';
 
 let index = 0;
 const instances = [];
@@ -53,6 +54,7 @@ class DPlayer {
         }
         if (utils.isMobile) {
             this.container.classList.add('dplayer-mobile');
+            this.options.autoplay = false;
         }
         this.arrow = this.container.offsetWidth <= 500;
         if (this.arrow) {
@@ -67,7 +69,7 @@ class DPlayer {
         });
 
         this.video = this.template.video;
-
+        this.advideo = this.template.advideo;
         this.bar = new Bar(this.template);
 
         this.bezel = new Bezel(this.template.bezel);
@@ -83,8 +85,6 @@ class DPlayer {
                 callback: () => {
                     setTimeout(() => {
                         this.template.danmakuLoading.style.display = 'none';
-
-                        // autoplay
                         if (this.options.autoplay) {
                             this.play();
                         }
@@ -122,6 +122,8 @@ class DPlayer {
         }, true);
 
         this.paused = true;
+        this.adsended = false;
+        this.postendend = false;
 
         this.time = new Time(this);
 
@@ -129,13 +131,51 @@ class DPlayer {
 
         this.contextmenu = new ContextMenu(this);
 
-        this.initVideo(this.video, this.quality && this.quality.type || this.options.video.type);
+        if(!this.options.autoplay)
+        {
+            this.bezel.show(Icons.play);
+        }
+        if (this.options.playad) {
+            this.ads = new Ads({
+                container: this.template.adcontainer,
+                advideo: this.advideo,
+                video: this.video,
+                events: this.events,
+                adcountdown: this.template.adcountdown,
+                admore: this.template.admore,
+                adlink: this.template.adlink,
+                adapter: this.template.adapter,
+                adbtnclose: this.template.adbtnclose,
+                autoplay:this.options.autoplay,
+                controller:this.controller,
+                callback: () => {
+                    setTimeout(() => {
+                        this.adsended = true;
+                        this.video.src = this.options.video.url;
+                        this.initVideo(this.video, this.quality && this.quality.type || this.options.video.type);
+                        this.toggle();
+                    }, 0);
+                }
+            });
+       }
+        else {
+            this.adsended = true;
+            this.video.src = this.options.video.url;
+            this.initVideo(this.video, this.quality && this.quality.type || this.options.video.type);
+            if (!this.danmaku && this.options.autoplay) {
+                this.play();
+             }
+
+        }
+
+        //this.initVideo(this.video, this.quality && this.quality.type || this.options.video.type);
+       // if (!this.danmaku && this.options.autoplay) {
+       //     this.play();
+        //}
+
+
 
         this.infoPanel = new InfoPanel(this);
-
-        if (!this.danmaku && this.options.autoplay) {
-            this.play();
-        }
 
         index++;
         instances.push(this);
@@ -169,17 +209,23 @@ class DPlayer {
      * Play video
      */
     play () {
+        if(this.options.playad && !this.adsended)
+        {
+            this.adsended = true;
+            this.ads.play();
+        }
+        else
+        {
         this.paused = false;
         if (this.video.paused) {
             this.bezel.switch(Icons.play);
         }
 
         this.template.playButton.innerHTML = Icons.pause;
-
         const playedPromise = Promise.resolve(this.video.play());
         playedPromise.catch(() => {
-            this.pause();
-        }).then(() => {
+            this.pause();}
+        ).then(() => {
         });
         this.time.enable('loading');
         this.time.enable('progress');
@@ -194,6 +240,7 @@ class DPlayer {
                     instances[i].pause();
                 }
             }
+        }
         }
     }
 
@@ -264,11 +311,20 @@ class DPlayer {
      * Toggle between play and pause
      */
     toggle () {
+        this.bezel.hide();
         if (this.video.paused) {
+            if(this.options.playad)
+            {
+                this.ads.hidepausead();
+            }
             this.play();
         }
         else {
             this.pause();
+            if(this.options.playad)
+            {
+                this.ads.showpausead();
+            }
         }
     }
 
@@ -419,6 +475,7 @@ class DPlayer {
          */
         // show video time: the metadata has loaded or changed
         this.on('durationchange', () => {
+            //this.pause();
             if (video.duration !== 1) {           // compatibility: Android browsers will output 1 at first
                 this.template.dtime.innerHTML = utils.secondToTime(video.duration);
             }
@@ -438,10 +495,17 @@ class DPlayer {
         // video end
         this.ended = false;
         this.on('ended', () => {
+            console.log('video ended');
             this.bar.set('played', 1, 'width');
             if (!this.setting.loop) {
                 this.ended = true;
                 this.pause();
+                if(this.options.playad && !this.postendend)
+                {
+                    this.ads.sendpostad();
+                    this.postendend = true;
+                }
+
             }
             else {
                 this.seek(0);

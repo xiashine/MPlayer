@@ -24,7 +24,7 @@ const SendXMLHttpRequest = (url, data, success, error, fail) => {
     };
 
     xhr.open(data !== null ? 'POST' : 'GET', url, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhr.send(data !== null ? JSON.stringify(data) : null);
 };
 
@@ -44,7 +44,7 @@ export default {
 
     read: (endpoint, callback) => {
         SendXMLHttpRequest(endpoint, null, (xhr, response) => {
-            callback(null, response.danmaku);
+            callback(xhr, response);
         }, (xhr, response) => {
             callback({ status: xhr.status, response });
         }, (xhr) => {

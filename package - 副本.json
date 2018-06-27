@@ -14,7 +14,7 @@
     "dist"
   ],
   "repository": {
-    "url": "git+https://github.com/xiashine/MPlayer",
+    "url": "git+https://github.com/DIYgod/DPlayer.git",
     "type": "git"
   },
   "keywords": [
@@ -28,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/DIYgod/DPlayer/issues"
   },
-  "homepage": "https://github.com/xiashine/MPlayer#readme",
+  "homepage": "https://github.com/DIYgod/DPlayer#readme",
   "devDependencies": {
     "art-template": "4.12.2",
     "art-template-loader": "1.4.3",

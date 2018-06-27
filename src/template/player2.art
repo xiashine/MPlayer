@@ -264,23 +264,151 @@
       <a href="javascript:;" class="txp_ad_link" style="z-index: 1;position: relative"></a>
       <a href="javascript:;" class="txp_ad_more">详情点击
         <div class="txp_icon_arrow"></div></a>
-      <div style="left:10px;bottom:10px;position:absolute;opacity:0.6;font-size:12px;text-shadow:2px 2px #000" class="txp_none"></div>
+      <div style="left:10px;bottom:10px;position:absolute;opacity:0.6;font-size:12px;text-shadow:2px 2px #000" " class="txp_none"></gpdiv>
       <div  class="txp_ad_control">
         <div class="txp_ad_skip">
           <div  class="txp_ad_countdown">0</div>
         </div>
       </div>
 </div>
-<div class="hd-adapter-interactivelayer" style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; z-index: 4; pointer-events: none;display:none;">
-  <div class="txp_ad">
-    <div data-role="gp-ad-pause" class="txp_ad_center" style="position: absolute; z-index: 4; width: 300px; height: 250px; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto;">
+  <txpdiv data-role="hd-adapter-interactivelayer" class="hd-adapter-interactivelayer" style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; z-index: 4; pointer-events: none;display:none;">
+  <gpdiv data-role="gp-ad-pause-wrapper" class="txp_ad">
+    <!-- 中间广告位： 400*300 -->
+    <gpdiv data-role="gp-ad-pause" class="txp_ad_center" style="position: absolute; z-index: 4; width: 300px; height: 250px; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto;">
       <div data-role="gp-ad-pause-close" class="txp_btn txp_btn_close txp_btn_close_ad" title="关闭广告"></div>
       <img data-role="gp-ad-pause-img" alt="">
-      <div style="left:8px;bottom:8px;position:absolute;opacity:0.6;font-size:12px; z-index: 99">
-        <div style="background:#000;display:inline-block;box-shadow:2px 2px #000;color:#fff">广告</div>
-        <div style="display:inline-block;margin-left:10px;text-shadow:2px 2px #000"></div>
-      </div>
-      <div class="adloader_pause"></div>
+      <gpdiv style="left:8px;bottom:8px;position:absolute;opacity:0.6;font-size:12px; z-index: 99">
+        <gpdiv style="background:#000;display:inline-block;box-shadow:2px 2px #000;color:#fff">广告</gpdiv>
+        <gpdiv data-role="" style="display:inline-block;margin-left:10px;text-shadow:2px 2px #000"></gpdiv>
+      </gpdiv>
+      <iframe id="adLoaderIframe" name="adLoaderIframe" frameborder="0" scrolling="no" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; background: none; pointer-events: auto;"></iframe>
+    </gpdiv>
+  </gpdiv>
+</txpdiv>
+<txpdiv data-role="hd-adapter-adlayer" class="hd-adapter-adlayer" style="position: absolute; top: 0px; right: 0px; width: 100%; height: 100%; z-index: 4; background-color: rgb(0, 0, 0);display:none;">
+  <gpvideoad data-role="gp-video-ad" class="txp_ad" style="background: #000">
+    <video data-tag="current" data-index="1"  webkit-playsinline  playsinline preload="true" class="gp-video-ad-player" style="width: 100%; height: 100%; display: block;"></video>
+    <div style="width: 179px;height: 62px;left: 50%;top: 50%;position: absolute; margin: -31px 0 0 -88px;">
+      <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="179px" height="62px" viewBox="0 0 179 62" enable-background="new 0 0 179 62" xml:space="preserve">  <image id="image0" width="179" height="62" x="0" y="0" xlink:href="data:image/png;base64,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
+    MDg6MDAr0smwAAAAAElFTkSuQmCC"></image>
+    </svg>
     </div>
-  </div>
-</div>
+    <gpdiv class="txp_ad_inner">
+      <a data-role="gp-video-ad-linkarea" href="javascript:;" class="txp_ad_link" style="z-index: 1;position: relative"></a>
+      <a data-role="gp-video-ad-detail" href="javascript:;" class="txp_ad_more">详情点击
+        <gpdiv class="txp_icon_arrow"></gpdiv></a>
+      <gpdiv style="left:10px;bottom:10px;position:absolute;opacity:0.6;font-size:12px;text-shadow:2px 2px #000" data-role="gp-video-ad-dspName" class="txp_none"></gpdiv>
+      <gpdiv data-role="gp-video-ad-top" class="txp_ad_control">
+        <gpdiv data-role="gp-video-ad-canskip" class="txp_ad_skip">
+          <gpdiv data-role="gp-video-ad-time" class="txp_ad_countdown">0</gpdiv>
+        </gpdiv>
+      </gpdiv>
+    </gpdiv>
+  </gpvideoad>
+</txpdiv>

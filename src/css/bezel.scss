@@ -20,6 +20,9 @@
         border-radius: 50%;
         opacity: 0;
         pointer-events: none;
+        &.dplayer-bezel-show {
+            opacity: 1;
+        }
         &.dplayer-bezel-transition {
             animation: bezel-hide .5s linear;
         }
