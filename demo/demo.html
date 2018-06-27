@@ -6,99 +6,32 @@
 </head>
 <body>
 <link rel="stylesheet" href="../dist/DPlayer.min.css"/>
-<script src="../dist/DPlayer.min.js"></script>
+<script src="../dist/MPlayer.min.js"></script>
 <script src="http://static.m1905.cn/??js/core/jquery-edge.min.js"></script>
 <script src="hls.min.js"></script>
-<script src="http://static.m1905.cn/js/video/html5/swfobject.js"></script>
-<div  style="width:720px;height:480px;margin:0 auto;"><div id="dplayer" style="width:100%;height:100%;"></div></div>
+<div  style="width:720px;height:480px;margin:0 auto;"><div id="mplayer" style="width:100%;height:100%;"></div></div>
 
 <script>
 
-var player = {
-geturl:function(){
-        var t = this;
-        var params = {
-            'isHLS': false,
-            'charge': 0,
-            'vid': 85388,
-            'defn': 'shd',
-            'defnpayver': 1,
-            'otype': 'json',
-            'platform': 10901,
-            'sdtfrom': 'v1010',
-            'uuid':591542910146226,
-            //'host': 'v.1905.com',
-            //'fhdswitch': 0,
-            //'show1080p': 1,
-          };
-          var url = 'http://drmfa.m1905.com/mvod/getinfo.php';
-
-          $.ajax({
-            type: 'GET',
-            url: url,
-            data: params,
-            success: function(data){
-              console.log(data);
-              t.url = data.vl.host + data.vl.path;
-              t.getPlayerKey(data.vl.keyid);
-
-            },
-            dataType: 'jsonp'
-          });
-},
-getPlayerKey:function(keyid){
-         var t = this;
-         var params = {
-            'vid': 85388,
-            'otype': 'json',
-            'platform': 10901,
-            'filename':keyid,
-            'uuid':591542910146226
-          };
-          var url = 'http://drmfa.m1905.com/mvod/getkey.php';
-
-          $.ajax({
-            type: 'GET',
-            url: url,
-            data: params,
-            success: function(data){
-              console.log(data.vkey);
-              if(data.code = 200)
-              {
-                t.url = t.url + '/'+data.filename+'?vkey='+data.vkey+'&uuid=591542910146226'+'&srgid='+data.srgid+'&vrgid='+data.vrgid;
-                console.log("url:"+t.url);
-                t.play(t.url);
-              }
-              else
-              {
-                console.log(data.msg);
-              }
-            },
-            dataType: 'jsonp'
-          });
-    },
-play:function(url) {
-	const dp = new DPlayer({
-	    container: document.getElementById('dplayer'),
+function play () {
+	const dp = new MPlayer({
+	    container: document.getElementById('mplayer'),
 	    screenshot:true,
 	    autoplay:false,
         playad:true,
         //live:true,
         //poster:'//image11.m1905.cn/uploadfile/2017/0210/20170210101322410607.jpg',
-	   // live:true,
+	    live:true,
 	    video: {
-	        //url: 'http://hlslive2.ks-cdn.m1905.com/live/LIVEQYR8M567KGOXO/index.m3u8?tm=1529299736&sign=45e142d082f06a11a5d4cd5deaca1807',
-	        url:url,
+	        url: 'http://hlslive2.ks-cdn.m1905.com/live/LIVEQYR8M567KGOXO/index.m3u8?tm=1530682234&sign=f528c5b6948b4763a0f54e9862cf1eca',
             pic:'//image11.m1905.cn/uploadfile/2017/0210/20170210101322410607.jpg',
             type: 'hls'
 	    }
 	});
-}
-}
+    }
 $(document).ready(function(){
-    player.geturl();
+    play();
 $("#btnplay").click(function(){
-	//player.geturl();
     showp();
 });
 
