@@ -228,7 +228,7 @@ class Ads {
         this.options.adbtnclose.addEventListener('click', () => {this.options.adapter.style.display = 'none';});
     }
     sendpostad(){
-        if(this.adresponse.content.post)
+        if(this.adresponse.content && this.adresponse.content.post)
         {
             const cids = [];
             const ip = this.adresponse.content.post[0].ip;
